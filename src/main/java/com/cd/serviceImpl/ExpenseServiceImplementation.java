@@ -48,8 +48,8 @@ public class ExpenseServiceImplementation implements ExpenseService {
 
 	@Override
 	public ExpenseResponse getExpenseById(UUID id) {
-		Expense expense = this.findExpenseById(id);
-		ExpenseResponse expenseResponse = modelMapper.map(expense, ExpenseResponse.class);
+		Expense expense = this.expenseRepository.findById(id).orElseThrow(() -> new CustomException("Expense record not exists"));
+		ExpenseResponse expenseResponse = convertModelToResponse(expense);
 		return expenseResponse;
 	}
 
