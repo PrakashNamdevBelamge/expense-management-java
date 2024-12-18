@@ -12,14 +12,14 @@ import org.springframework.stereotype.Repository;
 import com.cd.model.Expense;
 
 @Repository
-public interface ExpenseRepository extends JpaRepository<Expense, UUID>{
+public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
 
 	Page<Expense> findByUserId(UUID userId, Pageable pageable);
-	
+
 	List<Expense> findByUserIdAndDateGreaterThanEqual(UUID userId, LocalDate date);
-	
+
 	List<Expense> findByUserId(UUID userId);
-	
+
 	List<Expense> findByUserIdAndDateBetween(UUID userId, LocalDate fromDate, LocalDate toDate);
 
 }

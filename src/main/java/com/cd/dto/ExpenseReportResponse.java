@@ -11,12 +11,13 @@ import lombok.NoArgsConstructor;
 @Data
 public class ExpenseReportResponse {
 
-	List<Report> reports;
-	
+	private List<Report> reports;
+	private Double total;
+
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Data
-	public static class Report{
+	public static class Report {
 		private String category;
 		private Double amount;
 	}

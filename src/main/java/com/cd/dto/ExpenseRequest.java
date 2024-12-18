@@ -1,7 +1,6 @@
 package com.cd.dto;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 import com.cd.model.Category;
 
@@ -17,22 +16,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class ExpenseRequest {
-	
-    private String id;
-    
-    @NotNull(message = "UserId is required")
-    private String userId;
-	
-    @NotBlank(message = "Title is required")
-    @Size(max = 250, min = 10, message = "Title length should be in between 10 to 250 chars")
+
+	private String id;
+
+	@NotNull(message = "UserId is required")
+	private String userId;
+
+	@NotBlank(message = "Title is required")
+	@Size(max = 250, min = 10, message = "Title length should be in between 10 to 250 chars")
 	private String title;
-	
-    @NotNull(message = "Amount is required")
+
+	@NotNull(message = "Amount is required")
 	private Double amount;
 
-    @NotNull(message = "Category is required")
+	@NotNull(message = "Category is required")
 	private Category category;
-	
-    @PastOrPresent(message = "Expense date should be past or present date")
+
+	@PastOrPresent(message = "Expense date should be past or present date")
 	private LocalDate date;
 }

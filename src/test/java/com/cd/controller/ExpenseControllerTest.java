@@ -107,7 +107,7 @@ public class ExpenseControllerTest {
 	        assertEquals(testResponse, response.getBody());
 	        verify(expenseService).getExpenseById(testId);
 	    }
-	
+
 	@Test
     public void searchEmployees() {
         when(expenseService.searchExpenses(testUserId,"FOOD",null, null)).thenReturn(Collections.singletonList(testResponse));
@@ -116,19 +116,20 @@ public class ExpenseControllerTest {
         assertEquals(testResponse, response.getBody().get(0));
         verify(expenseService).searchExpenses(testUserId,"FOOD",null, null);
     }
-	
+
 	@Test
-    public void getExpenseByMonthly() {
+	public void getExpenseByMonthly() {
 		ExpenseReportResponse expenseReport = new ExpenseReportResponse();
-		Report report = new Report(Category.FOOD.name(),120d);
+		Report report = new Report(Category.FOOD.name(), 120d);
 		expenseReport.setReports(new ArrayList<>());
 		expenseReport.getReports().add(report);
-        when(expenseService.getExpenseByType(testUserId,"current")).thenReturn(expenseReport);
-        ResponseEntity<ExpenseReportResponse> response = expenseController.getExpenseByMonthly(testUserId.toString(), "current");
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(expenseReport, response.getBody());
-        verify(expenseService).getExpenseByType(testUserId,"current");
-    }
+		when(expenseService.getExpenseByType(testUserId, "current")).thenReturn(expenseReport);
+		ResponseEntity<ExpenseReportResponse> response = expenseController.getExpenseByMonthly(testUserId.toString(),
+				"current");
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(expenseReport, response.getBody());
+		verify(expenseService).getExpenseByType(testUserId, "current");
+	}
 
 	@Test
 	public void addExpense() throws URISyntaxException {
