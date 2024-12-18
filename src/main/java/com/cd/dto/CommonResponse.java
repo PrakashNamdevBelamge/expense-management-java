@@ -14,5 +14,5 @@ public class CommonResponse {
 	private String statusCode;
 	private Object message;
 	private LocalDateTime timeStamp;
-	
+
 }

@@ -12,16 +12,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class ExpenseResponse {
-	
-    private String id;
-    
-    private String userId;
-	
-  	private String title;
-	
+
+	private String id;
+
+	private String userId;
+
+	private String title;
+
 	private Double amount;
 
 	private Category category;
-	
+
 	private LocalDate date;
 }

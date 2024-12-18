@@ -10,26 +10,21 @@ import org.springframework.data.domain.Pageable;
 import com.cd.dto.ExpenseReportResponse;
 import com.cd.dto.ExpenseRequest;
 import com.cd.dto.ExpenseResponse;
-import com.cd.model.Expense;
 
 public interface ExpenseService {
 
 	public Page<ExpenseResponse> getAllExpenses(Pageable pageable, UUID userId);
-	
+
 	public ExpenseResponse getExpenseById(UUID id);
-	
-	public ExpenseReportResponse getExpenseByType(UUID userId, String type);
-	
+
+	public ExpenseReportResponse getExpenseByType(UUID userId, String duration);
+
 	public List<ExpenseResponse> searchExpenses(UUID userId, String searchValue, LocalDate fromDate, LocalDate toDate);
-	
+
 	public ExpenseResponse addExpense(ExpenseRequest expenseRequestDTO);
-	
+
 	public ExpenseResponse updateExpense(ExpenseRequest expenseRequestDTO, UUID id);
-	
+
 	public boolean deleteExpense(UUID id);
-	
-	public Expense convertRequestToModel(ExpenseRequest expenseRequest);
-	
-	public ExpenseResponse convertModelToResponse(Expense expense);
-	
+
 }

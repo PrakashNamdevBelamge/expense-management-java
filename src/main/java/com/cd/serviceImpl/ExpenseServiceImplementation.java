@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.cd.commons.Constants;
 import com.cd.dto.ExpenseReportResponse;
 import com.cd.dto.ExpenseReportResponse.Report;
 import com.cd.dto.ExpenseRequest;
@@ -48,30 +49,41 @@ public class ExpenseServiceImplementation implements ExpenseService {
 
 	@Override
 	public ExpenseResponse getExpenseById(UUID id) {
-		Expense expense = this.expenseRepository.findById(id).orElseThrow(() -> new CustomException("Expense record not exists"));
-		ExpenseResponse expenseResponse = convertModelToResponse(expense);
+		Expense expense = this.expenseRepository.findById(id)
+				.orElseThrow(() -> new CustomException(Constants.EXPENSE_NOT_EXIST));
+		ExpenseResponse expenseResponse = modelMapper.map(expense, ExpenseResponse.class);
 		return expenseResponse;
 	}
 
 	@Override
-	public ExpenseReportResponse getExpenseByType(UUID userId, String type) {
+	public ExpenseReportResponse getExpenseByType(UUID userId, String duration) {
 		List<Expense> expenses = null;
-		if (type.equalsIgnoreCase("current")) {
+		if (duration.equalsIgnoreCase(Constants.CURRENT)) {
 			LocalDate local = LocalDate.now();
 			local = local.withDayOfMonth(1);
+			expenses = this.expenseRepository.findByUserIdAndDateGreaterThanEqual(userId, local);
+		} else if (duration.equalsIgnoreCase(Constants.SIX_MONTH)) {
+			LocalDate local = LocalDate.now();
+			local = local.minusMonths(6);
+			expenses = this.expenseRepository.findByUserIdAndDateGreaterThanEqual(userId, local);
+		} else if (duration.equalsIgnoreCase(Constants.YEAR)) {
+			LocalDate local = LocalDate.now();
+			local = local.minusYears(1);
 			expenses = this.expenseRepository.findByUserIdAndDateGreaterThanEqual(userId, local);
 		}
 		Map<Category, List<Expense>> group = expenses.stream().collect(Collectors.groupingBy(Expense::getCategory));
 		ExpenseReportResponse expenseReportResponse = new ExpenseReportResponse();
 		expenseReportResponse.setReports(new ArrayList<>());
+		Double total = 0d;
 		for (Entry<Category, List<Expense>> data : group.entrySet()) {
 			Report report = new Report();
 			Double sum = data.getValue().stream().map(exp -> exp.getAmount()).reduce(0d, (a, b) -> a + b);
 			report.setCategory(data.getKey().toString());
 			report.setAmount(sum);
+			total = total + sum;
 			expenseReportResponse.getReports().add(report);
 		}
-
+		expenseReportResponse.setTotal(total);
 		return expenseReportResponse;
 	}
 
@@ -89,20 +101,21 @@ public class ExpenseServiceImplementation implements ExpenseService {
 						|| pattern.matcher(emp.getAmount().toString()).matches()
 						|| pattern.matcher(emp.getCategory().name()).matches()
 						|| pattern.matcher(emp.getDate().toString()).matches();
-			}).map(data -> convertModelToResponse(data)).collect(Collectors.toList());
+			}).map(data -> modelMapper.map(data, ExpenseResponse.class)).collect(Collectors.toList());
 
 		} else if (Objects.nonNull(fromDate) && Objects.nonNull(toDate)) {
 			expenses = this.expenseRepository.findByUserIdAndDateBetween(userId, fromDate, toDate);
-			expenseResponses = expenses.stream().map(data -> convertModelToResponse(data)).collect(Collectors.toList());
+			expenseResponses = expenses.stream().map(data -> modelMapper.map(data, ExpenseResponse.class))
+					.collect(Collectors.toList());
 		}
 		return expenseResponses;
 	}
 
 	@Override
 	public ExpenseResponse addExpense(ExpenseRequest expenseRequestDTO) {
-		Expense expense = this.convertRequestToModel(expenseRequestDTO);
+		Expense expense = modelMapper.map(expenseRequestDTO, Expense.class);
 		expense = this.expenseRepository.save(expense);
-		ExpenseResponse expenseResponse = this.convertModelToResponse(expense);
+		ExpenseResponse expenseResponse = modelMapper.map(expense, ExpenseResponse.class);
 		return expenseResponse;
 	}
 
@@ -124,31 +137,7 @@ public class ExpenseServiceImplementation implements ExpenseService {
 	}
 
 	private Expense findExpenseById(UUID id) {
-		return this.expenseRepository.findById(id).orElseThrow(() -> new CustomException("Expense record not exists"));
-	}
-
-	@Override
-	public Expense convertRequestToModel(ExpenseRequest expenseRequest) {
-		Expense expense = new Expense();
-		expense.setAmount(expenseRequest.getAmount());
-		expense.setUserId(UUID.fromString(expenseRequest.getUserId()));
-		expense.setCategory(expenseRequest.getCategory());
-		expense.setDate(expenseRequest.getDate());
-		expense.setTitle(expenseRequest.getTitle());
-		return expense;
-	}
-
-	@Override
-	public ExpenseResponse convertModelToResponse(Expense expense) {
-		ExpenseResponse expenseResponse = new ExpenseResponse();
-		expenseResponse.setAmount(expense.getAmount());
-		expenseResponse.setUserId(expense.getUserId().toString());
-		expenseResponse.setCategory(expense.getCategory());
-		expenseResponse.setDate(expense.getDate());
-		expenseResponse.setTitle(expense.getTitle());
-		expenseResponse.setId(expense.getId().toString());
-
-		return expenseResponse;
+		return this.expenseRepository.findById(id).orElseThrow(() -> new CustomException(Constants.EXPENSE_NOT_EXIST));
 	}
 
 }

@@ -2,14 +2,10 @@ package com.cd.model;
 
 import java.util.UUID;
 
-import jakarta.annotation.Generated;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,11 +19,10 @@ public class UserModel {
 	@GeneratedValue
 	@Id
 	private UUID id;
-	@NotBlank(message = "UserName is required")
+	@Column(name = "user_name", length = 100, nullable = false)
 	private String userName;
-	@Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$", message = "Please enter email in proper format")
+	@Column(name = "email", length = 100, nullable = false)
 	private String email;
-	@NotBlank(message = "Password is required")
-	@Size(max = 15, min = 6, message = "Password size should be between 6 to 15 characters")
+	@Column(name = "password", length = 100, nullable = false)
 	private String password;
 }

@@ -9,7 +9,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,21 +22,21 @@ public class Expense {
 	@Id
 	@GeneratedValue()
 	private UUID id;
-	
-	//This is to store expense with user
-	@Column(name = "user_id")
+
+	// This is to store expense with user
+	@Column(name = "user_id", nullable = false)
 	private UUID userId;
-	
-	@Column(name = "title",length = 100)
+
+	@Column(name = "title", length = 100, nullable = false)
 	private String title;
-	
-	@Column(name = "amount",length = 50)
+
+	@Column(name = "amount", length = 50, nullable = false)
 	private Double amount;
-	
+
 	@Enumerated(EnumType.STRING)
-	@Column(name = "category",length = 50)
+	@Column(name = "category", length = 50, nullable = false)
 	private Category category;
-	
-	@Column(name = "date")
+
+	@Column(name = "date", nullable = false)
 	private LocalDate date;
 }
