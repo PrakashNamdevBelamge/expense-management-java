@@ -110,6 +110,9 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		
+        <finalName>expense-app</finalName>
+   
 	</build>
 
 </project>
