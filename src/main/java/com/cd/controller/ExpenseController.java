@@ -42,7 +42,7 @@ import jakarta.validation.Valid;
 @CrossOrigin
 @Tag(name = "Expense related methods", description = "These apis are helpful to fetch add update and  delete expenses")
 @RestController
-@RequestMapping(value = "api")
+@RequestMapping(value = "/api")
 public class ExpenseController {
 
 	private final ExpenseService expenseService;

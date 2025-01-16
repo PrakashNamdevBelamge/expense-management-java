@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +32,7 @@ import com.cd.service.ExpenseService;
 @Service
 public class ExpenseServiceImplementation implements ExpenseService {
 
+	private final Logger logger = LoggerFactory.getLogger(ExpenseServiceImplementation.class);
 	private final ExpenseRepository expenseRepository;
 
 	private final ModelMapper modelMapper;
@@ -42,6 +45,7 @@ public class ExpenseServiceImplementation implements ExpenseService {
 	@Override
 	public Page<ExpenseResponse> getAllExpenses(Pageable pageable, UUID userId) {
 		Page<Expense> pages = this.expenseRepository.findByUserId(userId, pageable);
+		logger.info("-----{}",pages.getContent());
 		List<ExpenseResponse> expenses = pages.getContent().stream()
 				.map(expense -> modelMapper.map(expense, ExpenseResponse.class)).collect(Collectors.toList());
 		return new PageImpl<>(expenses, pages.getPageable(), pages.getTotalElements());
@@ -71,6 +75,7 @@ public class ExpenseServiceImplementation implements ExpenseService {
 			local = local.minusYears(1);
 			expenses = this.expenseRepository.findByUserIdAndDateGreaterThanEqual(userId, local);
 		}
+		logger.info(expenses.toString());
 		Map<Category, List<Expense>> group = expenses.stream().collect(Collectors.groupingBy(Expense::getCategory));
 		ExpenseReportResponse expenseReportResponse = new ExpenseReportResponse();
 		expenseReportResponse.setReports(new ArrayList<>());
@@ -84,6 +89,7 @@ public class ExpenseServiceImplementation implements ExpenseService {
 			expenseReportResponse.getReports().add(report);
 		}
 		expenseReportResponse.setTotal(total);
+		logger.info(expenseReportResponse.toString());
 		return expenseReportResponse;
 	}
 
