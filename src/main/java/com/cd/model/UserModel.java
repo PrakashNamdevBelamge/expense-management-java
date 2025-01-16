@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Entity
-public class UserModel {
+public class UserModel extends BaseEntity{
 
 	@GeneratedValue
 	@Id

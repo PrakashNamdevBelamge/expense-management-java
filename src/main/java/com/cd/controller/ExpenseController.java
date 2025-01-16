@@ -7,21 +7,18 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import com.cd.commons.PropertiesConfig;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.cd.commons.Constants;
@@ -43,21 +40,39 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 @CrossOrigin
+@Tag(name = "Expense related methods", description = "These apis are helpful to fetch add update and  delete expenses")
 @RestController
 @RequestMapping(value = "api")
 public class ExpenseController {
 
 	private final ExpenseService expenseService;
+	private final PropertiesConfig propertiesConfig;
+	private final Environment environment;
 
-	public ExpenseController(ExpenseService expenseService) {
+	@Value("${build.number:1.0}")
+	private String buildNumber;
+
+	@Value("${profile}")
+	private String profile;
+
+	public ExpenseController(ExpenseService expenseService, PropertiesConfig propertiesConfig, Environment environment) {
 		this.expenseService = expenseService;
+		this.propertiesConfig = propertiesConfig;
+		this.environment = environment;
 	}
 
+	@Operation(summary = "fetch all expenses", description = "This api is used to fetch all expenses")
+	@ApiResponse(description = "Success Response", responseCode = "200")
 	@GetMapping(value = "/expenses")
 	public ResponseEntity<Page<ExpenseResponse>> getAllExpensesByUserId(
 			@PageableDefault(direction = Sort.Direction.ASC, size = 10, page = 0, sort = Constants.CATEGORY_SMALL) Pageable pageable,
 			@RequestParam String userId) {
 		return ResponseEntity.ok(this.expenseService.getAllExpenses(pageable, UUID.fromString(userId)));
+	}
+
+	@GetMapping
+	public String getProperty() {
+		return this.propertiesConfig.companyName()+ " "+this.propertiesConfig.name()+" "+this.propertiesConfig.umail()+" "+buildNumber+" "+this.environment.getProperty("JAVA_HOME")+profile;
 	}
 
 	@GetMapping(value = "/expenses/{id}")

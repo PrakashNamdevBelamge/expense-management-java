@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import com.cd.model.Category;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Schema(name = "ExpenseRequest", description = "ExpenseRequest")
 public class ExpenseRequest {
 
 	private String id;
