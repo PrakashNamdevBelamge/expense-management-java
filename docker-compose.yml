@@ -1,0 +1,6 @@
+services:
+  expense-app:
+    image: prakashnb/myimages:tag123
+    container_name: expense-app-container
+    ports:
+      - "8080:80"
