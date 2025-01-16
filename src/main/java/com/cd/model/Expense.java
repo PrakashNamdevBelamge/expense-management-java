@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Entity
-public class Expense {
+public class Expense extends BaseEntity{
 
 	@Id
 	@GeneratedValue()

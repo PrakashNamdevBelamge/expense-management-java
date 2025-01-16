@@ -1,6 +1,11 @@
 package com.cd.commons;
 
 public class Constants {
+/*
+ * Object creation not allowed
+ */
+	private Constants(){}
+
 
 	public static final String CURRENT = "currentmonth";
 	public static final String SIX_MONTH = "sixmonth";
